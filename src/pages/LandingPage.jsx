@@ -60,86 +60,85 @@ const LandingPage = () => {
     }
   ];
 
-  return (
+return (
     <div className="landing-page">
-      <section className="hero">
-        <div className="hero-content">
-          <h1 className="hero-title">
-            <span className="hero-icon">🌱</span>
-            মন বন্ধু
-          </h1>
-          <p className="hero-subtitle">
-            গ্রামীণ বাংলাদেশের জন্য স্বাস্থ্য সেবা
-          </p>
-          <div className="hero-features">
-            <div className="feature-badge">
-              <span>📴</span>
-              <span>অফলাইনে কাজ করে</span>
+        <section className="hero">
+            <div className="hero-content">
+                <h1 className="hero-title">
+                    <span className="heron">🩺মনবন্ধু</span>
+                </h1>
+                <p className="hero-subtitle">
+                    গ্রামীণ বাংলাদেশের জন্য স্বাস্থ্য সেবা
+                </p>
+                <div className="hero-features">
+                    <div className="feature-badge">
+                        <span>📴</span>
+                        <span>জরুরি মুড রিপোর্ট</span>
+                    </div>
+                    <div className="feature-badge">
+                        <span>🔒</span>
+                        <span>গোপনীয় ও নিরাপদ</span>
+                    </div>
+                    <div className="feature-badge">
+                        <span>🎤</span>
+                        <span>ভয়েসে জরুরি সহায়তা</span>
+                    </div>
+                </div>
             </div>
-            <div className="feature-badge">
-              <span>🔒</span>
-              <span>সম্পূর্ণ গোপনীয়</span>
-            </div>
-            <div className="feature-badge">
-              <span>🎤</span>
-              <span>কথা বলে ব্যবহার করুন</span>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="about">
-        <div className="about-content">
-          <h2>মন বন্ধু কি?</h2>
-          <p>
-            মন বন্ধু একটি বিশেষ স্বাস্থ্য সেবা অ্যাপ যা গ্রামীণ বাংলাদেশের মানুষের জন্য তৈরি। 
-            এই অ্যাপটি ইন্টারনেট ছাড়াই কাজ করে এবং আপনার সকল তথ্য আপনার ফোনেই নিরাপদ থাকে।
-          </p>
-          <div className="about-points">
-            <div className="point">
-              <span className="point-icon">✓</span>
-              <span>২জি নেটওয়ার্কেও কাজ করে</span>
+        <section className="about">
+            <div className="about-content">
+                <h2>মনবন্ধু কি?</h2>
+                <p>
+                    মনবন্ধু একটি বিশেষ স্বাস্থ্য সেবা অ্যাপ যা গ্রামীণ বাংলাদেশের মানুষের জন্য তৈরি। 
+                    এই অ্যাপটি ইন্টারনেট ছাড়াই কাজ করে এবং আপনার সকল তথ্য আপনার ফোনেই নিরাপদ থাকে।
+                </p>
+                <div className="about-points">
+                    <div className="point">
+                        <span className="point-icon">✓</span>
+                        <span>অফলাইনে জরুরি সেবা</span>
+                    </div>
+                    <div className="point">
+                        <span className="point-icon">✓</span>
+                        <span>কোনো লগইন ছাড়াই দ্রুত প্রবেশ</span>
+                    </div>
+                    <div className="point">
+                        <span className="point-icon">✓</span>
+                        <span>জরুরি নির্দেশ সহজ বাংলায়</span>
+                    </div>
+                    <div className="point">
+                        <span className="point-icon">✓</span>
+                        <span>চিত্র ও আইকনে দ্রুত চিহ্নিত করুন</span>
+                    </div>
+                </div>
             </div>
-            <div className="point">
-              <span className="point-icon">✓</span>
-              <span>কোনো লগইন লাগবে না</span>
-            </div>
-            <div className="point">
-              <span className="point-icon">✓</span>
-              <span>সহজ বাংলায় সব তথ্য</span>
-            </div>
-            <div className="point">
-              <span className="point-icon">✓</span>
-              <span>ছবি ও আইকন দিয়ে বোঝা সহজ</span>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="missions">
-        <h2 className="missions-title">আমাদের সেবাসমূহ</h2>
-        <div className="missions-grid">
-          {missions.map((mission, index) => (
-            <Link to={mission.link} key={index} className="mission-card">
-              <div className="mission-icon">{mission.icon}</div>
-              <h3 className="mission-title">{mission.title}</h3>
-              <p className="mission-description">{mission.description}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
+        <section className="missions">
+            <h2 className="missions-title">আমাদের সেবাসমূহ</h2>
+            <div className="missions-grid">
+                {missions.map((mission, index) => (
+                    <Link to={mission.link} key={index} className="mission-card">
+                        <div className="mission-icon">{mission.icon}</div>
+                        <h3 className="mission-title">{mission.title}</h3>
+                        <p className="mission-description">{mission.description}</p>
+                    </Link>
+                ))}
+            </div>
+        </section>
 
-      <section className="cta">
-        <div className="cta-content">
-          <h2>এখনই শুরু করুন</h2>
-          <p>আপনার স্বাস্থ্য সেবার যাত্রা শুরু করুন আজই</p>
-          <Link to="/mental-health" className="cta-button">
-            শুরু করুন →
-          </Link>
-        </div>
-      </section>
+        <section className="cta">
+            <div className="cta-content">
+                <h2>এখনই শুরু করুন</h2>
+                <p>আপনার স্বাস্থ্য সেবার যাত্রা শুরু করুন আজই</p>
+                <Link to="/mental-health" className="cta-button">
+                    এখনই সাহায্য নিন →
+                </Link>
+            </div>
+        </section>
     </div>
-  );
+);
 };
 
 export default LandingPage;

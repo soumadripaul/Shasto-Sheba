@@ -7,8 +7,8 @@ const Header = () => {
     <header className="header">
       <div className="header-container">
         <Link to="/" className="logo">
-          <span className="logo-icon">🌱</span>
-          <span className="logo-text">মন বন্ধু</span>
+          <span className="logo-icon">🩺</span>
+          <span className="logo-text">মনবন্ধু</span>
         </Link>
         <nav className="nav">
           <button className="nav-toggle" onClick={() => {

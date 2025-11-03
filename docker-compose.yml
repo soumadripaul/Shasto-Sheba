@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # MonBondhu Web Application
+  monbondhu-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: monbondhu-web
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - monbondhu-network
+    labels:
+      - "com.monbondhu.description=MonBondhu Health Web Application"
+      - "com.monbondhu.version=1.0.0"
+
+  # Optional: Add a database if needed in future
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: monbondhu-db
+  #   environment:
+  #     - POSTGRES_USER=monbondhu
+  #     - POSTGRES_PASSWORD=monbondhu123
+  #     - POSTGRES_DB=monbondhu_db
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - monbondhu-network
+
+networks:
+  monbondhu-network:
+    driver: bridge
+
+# volumes:
+#   postgres-data:
