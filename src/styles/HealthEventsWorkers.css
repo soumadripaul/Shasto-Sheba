@@ -1,7 +1,7 @@
 .events-workers-container {
   min-height: calc(100vh - 200px);
   padding: 2rem 1rem;
-  background: linear-gradient(to bottom, #fef9c3, #fef08a);
+  background: linear-gradient(to bottom, #ddd6fe, #c4b5fd);
 }
 
 .events-workers-content {

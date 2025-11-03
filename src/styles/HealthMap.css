@@ -1,7 +1,7 @@
 .health-map-container {
   min-height: calc(100vh - 200px);
   padding: 2rem 1rem;
-  background: linear-gradient(to bottom, #fef3c7, #fde68a);
+  background: linear-gradient(to bottom, #ddd6fe, #c4b5fd);
 }
 
 .health-map-content {

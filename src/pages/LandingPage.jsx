@@ -118,13 +118,30 @@ return (
         <section className="missions">
             <h2 className="missions-title">আমাদের সেবাসমূহ</h2>
             <div className="missions-grid">
-                {missions.map((mission, index) => (
-                    <Link to={mission.link} key={index} className="mission-card">
-                        <div className="mission-icon">{mission.icon}</div>
-                        <h3 className="mission-title">{mission.title}</h3>
-                        <p className="mission-description">{mission.description}</p>
-                    </Link>
-                ))}
+                {missions.map((mission, index) => {
+                    // Special handling for health workers to redirect to workers tab
+                    if (mission.title === 'স্বাস্থ্যকর্মী তালিকা') {
+                        return (
+                            <Link 
+                                to="/health-events" 
+                                state={{ tab: 'workers' }}
+                                key={index} 
+                                className="mission-card"
+                            >
+                                <div className="mission-icon">{mission.icon}</div>
+                                <h3 className="mission-title">{mission.title}</h3>
+                                <p className="mission-description">{mission.description}</p>
+                            </Link>
+                        );
+                    }
+                    return (
+                        <Link to={mission.link} key={index} className="mission-card">
+                            <div className="mission-icon">{mission.icon}</div>
+                            <h3 className="mission-title">{mission.title}</h3>
+                            <p className="mission-description">{mission.description}</p>
+                        </Link>
+                    );
+                })}
             </div>
         </section>
 

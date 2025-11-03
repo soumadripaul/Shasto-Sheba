@@ -1,7 +1,7 @@
 .maternal-health-container {
   min-height: calc(100vh - 200px);
   padding: 2rem 1rem;
-  background: linear-gradient(to bottom, #fce7f3, #fbcfe8);
+  background: linear-gradient(to bottom, #ddd6fe, #c4b5fd);
 }
 
 .maternal-health-content {

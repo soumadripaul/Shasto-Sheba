@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import eventsData from '../data/events.json';
 import workersData from '../data/workers.json';
 import '../styles/HealthEventsWorkers.css';
 
 const HealthEventsWorkers = () => {
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('events');
+
+  useEffect(() => {
+    // Check if there's a tab parameter in the URL state
+    if (location.state?.tab) {
+      setActiveTab(location.state.tab);
+    }
+  }, [location]);
 
   return (
     <div className="events-workers-container">

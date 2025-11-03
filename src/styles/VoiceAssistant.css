@@ -1,7 +1,7 @@
 .voice-assistant-container {
   min-height: calc(100vh - 200px);
   padding: 2rem 1rem;
-  background: linear-gradient(to bottom, #dfe9f3, #c3dafe);
+  background: linear-gradient(to bottom, #ddd6fe, #c4b5fd);
 }
 
 .voice-assistant-content {

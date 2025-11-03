@@ -1,7 +1,7 @@
 .symptom-checker-container {
   min-height: calc(100vh - 200px);
   padding: 2rem 1rem;
-  background: linear-gradient(to bottom, #ccfbf1, #99f6e4);
+  background: linear-gradient(to bottom, #ddd6fe, #c4b5fd);
 }
 
 .symptom-checker-content {
