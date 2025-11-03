@@ -1,0 +1,242 @@
+.voice-assistant-container {
+  min-height: calc(100vh - 200px);
+  padding: 2rem 1rem;
+  background: linear-gradient(to bottom, #dfe9f3, #c3dafe);
+}
+
+.voice-assistant-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.voice-interface {
+  background: white;
+  padding: 3rem 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  margin: 3rem 0;
+  text-align: center;
+}
+
+.microphone-button {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+  position: relative;
+}
+
+.microphone-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 30px rgba(59, 130, 246, 0.6);
+}
+
+.microphone-button.listening {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 40px rgba(239, 68, 68, 0.8);
+  }
+}
+
+.listening-animation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  animation: ripple 1.5s infinite;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.mic-icon {
+  font-size: 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.microphone-button p {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0.5rem 0 0 0;
+  position: relative;
+  z-index: 1;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+.transcript-box,
+.response-box {
+  background: #f0f9ff;
+  border: 2px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.transcript-box h3,
+.response-box h3 {
+  font-size: 1.2rem;
+  color: #1e40af;
+  margin-bottom: 0.75rem;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+.transcript-box p,
+.response-box p {
+  color: #1e3a8a;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+.speaking-indicator {
+  background: #10b981;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  display: inline-block;
+  margin-top: 1rem;
+  animation: blink 1s infinite;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.quick-questions {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin: 2rem 0;
+}
+
+.quick-questions h3 {
+  font-size: 1.5rem;
+  color: #1e40af;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+.questions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.quick-question-button {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 2px solid #93c5fd;
+  border-radius: 10px;
+  padding: 1.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+.quick-question-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  border-color: #3b82f6;
+}
+
+.question-icon {
+  font-size: 2rem;
+}
+
+.voice-tips {
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  padding: 1.5rem;
+  border-radius: 5px;
+  margin: 2rem 0;
+}
+
+.voice-tips h3 {
+  font-size: 1.2rem;
+  color: #92400e;
+  margin-bottom: 1rem;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+.voice-tips ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.voice-tips li {
+  color: #78350f;
+  margin: 0.5rem 0;
+  line-height: 1.6;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+.offline-mode-notice {
+  background: #dbeafe;
+  border-left: 4px solid #3b82f6;
+  padding: 1rem 1.5rem;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.notice-icon {
+  font-size: 1.5rem;
+}
+
+.offline-mode-notice p {
+  margin: 0;
+  color: #1e40af;
+  line-height: 1.5;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+@media (max-width: 768px) {
+  .microphone-button {
+    width: 150px;
+    height: 150px;
+  }
+
+  .mic-icon {
+    font-size: 3rem;
+  }
+
+  .questions-grid {
+    grid-template-columns: 1fr;
+  }
+}

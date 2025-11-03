@@ -1,0 +1,176 @@
+.health-tips-container {
+  min-height: calc(100vh - 200px);
+  padding: 2rem 1rem;
+  background: linear-gradient(to bottom, #ddd6fe, #c4b5fd);
+}
+
+.health-tips-content {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.season-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 3rem 0;
+}
+
+.season-button {
+  background: white;
+  border: 3px solid transparent;
+  border-radius: 15px;
+  padding: 2rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.season-button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+}
+
+.season-button.selected {
+  border-color: #8b5cf6;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: white;
+}
+
+.season-icon {
+  font-size: 3rem;
+}
+
+.season-name {
+  font-size: 1.3rem;
+  font-weight: bold;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+.tips-display {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.season-title {
+  font-size: 2rem;
+  color: #6d28d9;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.tip-card {
+  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+  border: 2px solid #c4b5fd;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.tip-card:hover {
+  transform: scale(1.05);
+}
+
+.tip-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.tip-title {
+  font-size: 1.3rem;
+  color: #5b21b6;
+  margin-bottom: 0.75rem;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+.tip-description {
+  font-size: 1rem;
+  color: #6d28d9;
+  line-height: 1.6;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+.additional-info {
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  padding: 1.5rem;
+  border-radius: 5px;
+  margin-bottom: 2rem;
+}
+
+.additional-info h3 {
+  font-size: 1.3rem;
+  color: #92400e;
+  margin-bottom: 1rem;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+.additional-info ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.additional-info li {
+  color: #78350f;
+  margin: 0.75rem 0;
+  line-height: 1.6;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+.offline-notice {
+  background: #dbeafe;
+  border-left: 4px solid #3b82f6;
+  padding: 1rem 1.5rem;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.offline-icon {
+  font-size: 1.5rem;
+}
+
+.offline-notice p {
+  margin: 0;
+  color: #1e40af;
+  line-height: 1.5;
+  font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+
+@media (max-width: 768px) {
+  .season-selector {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tips-grid {
+    grid-template-columns: 1fr;
+  }
+}
