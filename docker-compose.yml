@@ -53,12 +53,19 @@ services:
       - MONGODB_URI=mongodb://mongodb:27017/monbondhu
       - PORT=5000
       - JWT_SECRET=your_jwt_secret_key_change_this_in_production
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
     depends_on:
       - mongodb
     networks:
       - monbondhu-network
     labels:
       - "com.monbondhu.description=MonBondhu Backend API Server"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
 
 networks:
   monbondhu-network:

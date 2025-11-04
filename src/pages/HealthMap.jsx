@@ -14,6 +14,7 @@ const HealthMap = () => {
   const [divisions, setDivisions] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
+  const [allUpazilas, setAllUpazilas] = useState([]); // Store all upazilas
   const [loadingLocations, setLoadingLocations] = useState(false);
 
   useEffect(() => {
@@ -21,8 +22,9 @@ const HealthMap = () => {
     setHealthCenters(healthCentersData);
     setFilteredCenters(healthCentersData);
     
-    // Load divisions from API
+    // Load divisions and all upazilas from API
     loadDivisions();
+    loadAllUpazilas();
   }, []);
 
   const loadDivisions = async () => {
@@ -43,6 +45,50 @@ const HealthMap = () => {
       console.error('❌ Error loading divisions:', error);
     } finally {
       setLoadingLocations(false);
+    }
+  };
+
+  const loadAllUpazilas = async () => {
+    try {
+      console.log('🔵 Loading all upazilas...');
+      
+      // Load all districts first to get their upazilas
+      const divResponse = await fetch('https://bdapi.vercel.app/api/v.1/division');
+      const divData = await divResponse.json();
+      
+      if (divData && divData.data) {
+        const allUpazilasTemp = [];
+        
+        // For each division, get districts
+        for (const division of divData.data) {
+          try {
+            const distResponse = await fetch(`https://bdapi.vercel.app/api/v.1/division/${division.division}`);
+            const distData = await distResponse.json();
+            
+            if (distData && distData.data) {
+              // Each district has upazilas
+              distData.data.forEach(district => {
+                if (district.upazilla && Array.isArray(district.upazilla)) {
+                  district.upazilla.forEach(upazila => {
+                    allUpazilasTemp.push({
+                      ...upazila,
+                      district: district.district,
+                      districtId: district._id || district.id
+                    });
+                  });
+                }
+              });
+            }
+          } catch (err) {
+            console.warn('⚠️ Error loading districts for division:', division.division, err);
+          }
+        }
+        
+        setAllUpazilas(allUpazilasTemp);
+        console.log('✅ Loaded total', allUpazilasTemp.length, 'upazilas from all districts');
+      }
+    } catch (error) {
+      console.error('❌ Error loading all upazilas:', error);
     }
   };
 
@@ -72,33 +118,37 @@ const HealthMap = () => {
       setLoadingLocations(true);
       console.log('🔵 === UPAZILA LOADING START ===');
       console.log('🔵 District ID:', districtId);
-      console.log('🔵 API URL:', `https://bdapi.vercel.app/api/v.1/upazila/${districtId}`);
       
-      // Correct endpoint for upazilas
-      const response = await fetch(`https://bdapi.vercel.app/api/v.1/upazila/${districtId}`);
+      // Find the district object to get proper district name
+      const districtObj = districts.find(d => 
+        d.id === districtId || 
+        d._id === districtId ||
+        d.district === districtId
+      );
       
-      console.log('📡 Response Status:', response.status);
-      console.log('📡 Response OK:', response.ok);
+      console.log('🔵 District Object:', districtObj);
       
-      const data = await response.json();
+      // Use district name for filtering
+      const districtName = districtObj?.district || districtObj?.name || districtId;
       
-      console.log('✅ Upazilas API response:', data);
-      console.log('📊 Response structure:', {
-        hasData: !!data,
-        hasDataProperty: !!data?.data,
-        dataLength: data?.data?.length,
-        dataType: typeof data?.data,
-        isArray: Array.isArray(data?.data),
-        firstItem: data?.data?.[0]
-      });
+      console.log('🔵 Using District Name:', districtName);
+      console.log('🔵 Total upazilas in memory:', allUpazilas.length);
       
-      if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
-        setUpazilas(data.data);
-        console.log('✅ Successfully loaded', data.data.length, 'upazilas');
-        console.log('✅ First upazila:', data.data[0]);
+      // Filter upazilas from the pre-loaded list
+      const filteredUpazilas = allUpazilas.filter(upazila => 
+        upazila.district === districtName ||
+        upazila.districtId === districtId ||
+        upazila.district_id === districtId
+      );
+      
+      console.log('✅ Filtered upazilas for', districtName, ':', filteredUpazilas);
+      
+      if (filteredUpazilas.length > 0) {
+        setUpazilas(filteredUpazilas);
+        console.log('✅ Successfully loaded', filteredUpazilas.length, 'upazilas');
+        console.log('✅ First upazila:', filteredUpazilas[0]);
       } else {
-        console.warn('⚠️ No upazilas found for district:', districtId);
-        console.warn('⚠️ Response data:', data);
+        console.warn('⚠️ No upazilas found for district:', districtName);
         setUpazilas([]);
       }
     } catch (error) {

@@ -30,6 +30,7 @@ function App() {
             <Route path="/health-events" element={<HealthEventsWorkers />} />
             <Route path="/health-workers" element={<HealthEventsWorkers />} />
             <Route path="/voice-assistant" element={<VoiceAssistant />} />
+            <Route path="/chatbot" element={<VoiceAssistant />} />
           </Routes>
         </main>
         <Footer />

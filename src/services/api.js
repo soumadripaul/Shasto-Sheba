@@ -249,6 +249,18 @@ class ApiService {
       return { data: [] };
     }
   }
+
+  // Chatbot
+  async sendChatMessage(message) {
+    return this.request('/api/chatbot', {
+      method: 'POST',
+      body: JSON.stringify({ message }),
+    });
+  }
+
+  async getChatbotHealth() {
+    return this.request('/api/chatbot/health');
+  }
 }
 
 const apiService = new ApiService(API_BASE_URL);

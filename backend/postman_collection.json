@@ -1,0 +1,1248 @@
+{
+	"info": {
+		"_postman_id": "mon-bondhu-api-collection",
+		"name": "Mon Bondhu API - Complete Collection",
+		"description": "Comprehensive Postman collection for Mon Bondhu Health Support Platform API.\n\n## Features\n- All API endpoints from OpenAPI specification\n- Pre-configured request examples in Bengali\n- Environment variables for easy switching\n- Automated tests for responses\n- Organized by functional categories\n\n## Setup\n1. Import this collection into Postman\n2. Create an environment with variables:\n   - `baseUrl`: http://localhost:5000\n   - `apiKey`: your_api_key (for future use)\n3. Start testing!\n\n## Categories\n- Health Tips\n- Health Centers\n- Events\n- Workers\n- Help Requests\n- Mental Health\n- Maternal Health\n- Symptom Checker\n- Statistics\n- Chatbot",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "mon-bondhu"
+	},
+	"item": [
+		{
+			"name": "Health Tips",
+			"item": [
+				{
+					"name": "Get All Health Tips",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success property\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response has data array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"    pm.expect(jsonData.data).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/health-tips",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"health-tips"
+							]
+						},
+						"description": "Retrieve all health tips from the database"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Health Tips by Category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Filtered by category\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data.length > 0) {",
+									"        pm.expect(jsonData.data[0].category).to.eql('পুষ্টি');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/health-tips?category=পুষ্টি&language=bn",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"health-tips"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "পুষ্টি",
+									"description": "Filter by category"
+								},
+								{
+									"key": "language",
+									"value": "bn",
+									"description": "Filter by language (bn/en)"
+								}
+							]
+						},
+						"description": "Get health tips filtered by category and language"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Health Tip",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 404\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    pm.test(\"Response has health tip data\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData.data).to.have.property('title');",
+									"        pm.expect(jsonData.data).to.have.property('description');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/health-tips/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"health-tips",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "507f1f77bcf86cd799439011",
+									"description": "Health tip ID"
+								}
+							]
+						},
+						"description": "Get a specific health tip by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Health Tip",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Health tip created\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.data).to.have.property('_id');",
+									"    ",
+									"    // Save ID for future requests",
+									"    pm.environment.set('lastHealthTipId', jsonData.data._id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"গ্রীষ্মকালে হাইড্রেটেড থাকুন\",\n  \"description\": \"প্রতিদিন কমপক্ষে ৮-১০ গ্লাস পানি পান করুন। পানিশূন্যতা এড়াতে নিয়মিত পানি পান করুন।\",\n  \"category\": \"পুষ্টি\",\n  \"season\": \"গ্রীষ্মকাল\",\n  \"icon\": \"💧\",\n  \"language\": \"bn\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/health-tips",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"health-tips"
+							]
+						},
+						"description": "Create a new health tip"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Health Tip",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 404\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"গ্রীষ্মকালে হাইড্রেটেড থাকুন - আপডেট\",\n  \"description\": \"প্রতিদিন কমপক্ষে ৮-১০ গ্লাস পানি পান করুন। পানিশূন্যতা এড়াতে নিয়মিত পানি পান করুন। ডাবের পানি এবং ফলের রস খান।\",\n  \"season\": \"গ্রীষ্মকাল\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/health-tips/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"health-tips",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{lastHealthTipId}}",
+									"description": "Health tip ID to update"
+								}
+							]
+						},
+						"description": "Update an existing health tip"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Health Tip",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 404\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/health-tips/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"health-tips",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{lastHealthTipId}}",
+									"description": "Health tip ID to delete"
+								}
+							]
+						},
+						"description": "Delete a health tip"
+					},
+					"response": []
+				}
+			],
+			"description": "Health tips and guidance in Bengali/English"
+		},
+		{
+			"name": "Chatbot",
+			"item": [
+				{
+					"name": "Chat with AI Bot",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains chatbot reply\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData).to.have.property('response');",
+									"    pm.expect(jsonData.response).to.be.a('string');",
+									"    pm.expect(jsonData.response.length).to.be.above(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"message\": \"জ্বর হলে কি করতে হবে?\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/chatbot",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"chatbot"
+							]
+						},
+						"description": "Send a health-related question to the AI chatbot in Bengali"
+					},
+					"response": []
+				},
+				{
+					"name": "Chat - Hospital Query",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"message\": \"নিকটস্থ হাসপাতাল কোথায়?\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/chatbot",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"chatbot"
+							]
+						},
+						"description": "Ask about nearby hospitals"
+					},
+					"response": []
+				},
+				{
+					"name": "Chat - Pregnancy Query",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"message\": \"গর্ভাবস্থায় কি খাবার খাওয়া উচিত?\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/chatbot",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"chatbot"
+							]
+						},
+						"description": "Ask about pregnancy nutrition"
+					},
+					"response": []
+				},
+				{
+					"name": "Chat - Mental Health Query",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"message\": \"মানসিক চাপ কমাতে কি করা যায়?\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/chatbot",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"chatbot"
+							]
+						},
+						"description": "Ask about mental health and stress management"
+					},
+					"response": []
+				}
+			],
+			"description": "AI-powered health assistant chatbot with Bengali language support"
+		},
+		{
+			"name": "Help Requests",
+			"item": [
+				{
+					"name": "Get All Help Requests",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has data array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/help-requests",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"help-requests"
+							]
+						},
+						"description": "Get all help requests"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Help Requests by Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/help-requests?status=pending&urgency=high",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"help-requests"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending",
+									"description": "pending, assigned, in-progress, completed, cancelled"
+								},
+								{
+									"key": "urgency",
+									"value": "high",
+									"description": "low, medium, high, critical"
+								}
+							]
+						},
+						"description": "Filter help requests by status and urgency"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Help Request by Ticket Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 404\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/help-requests/code/:ticketCode",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"help-requests",
+								"code",
+								":ticketCode"
+							],
+							"variable": [
+								{
+									"key": "ticketCode",
+									"value": "HELP-2024-001",
+									"description": "Unique ticket code"
+								}
+							]
+						},
+						"description": "Track a help request using ticket code"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Help Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/help-requests/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"help-requests",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{lastHelpRequestId}}",
+									"description": "Help request ID"
+								}
+							]
+						},
+						"description": "Get a specific help request by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Help Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Help request created with ticket code\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.data).to.have.property('ticketCode');",
+									"    pm.expect(jsonData.data).to.have.property('_id');",
+									"    ",
+									"    // Save for future requests",
+									"    pm.environment.set('lastHelpRequestId', jsonData.data._id);",
+									"    pm.environment.set('lastTicketCode', jsonData.data.ticketCode);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"রহিম আহমেদ\",\n  \"phone\": \"01712345678\",\n  \"location\": \"মিরপুর, ঢাকা\",\n  \"requestType\": \"consultation\",\n  \"description\": \"তীব্র জ্বর এবং মাথা ব্যথা। ৩ দিন ধরে জ্বর আছে এবং শরীর ব্যথা করছে।\",\n  \"urgency\": \"high\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/help-requests",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"help-requests"
+							]
+						},
+						"description": "Submit a new anonymous help request"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Emergency Help Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"করিম হোসেন\",\n  \"phone\": \"01798765432\",\n  \"location\": \"উত্তরা, ঢাকা\",\n  \"requestType\": \"emergency\",\n  \"description\": \"জরুরি অবস্থা। রোগীর শ্বাসকষ্ট এবং বুকে ব্যথা। অবিলম্বে অ্যাম্বুলেন্স প্রয়োজন।\",\n  \"urgency\": \"critical\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/help-requests",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"help-requests"
+							]
+						},
+						"description": "Submit a critical emergency help request"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Help Request",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"in-progress\",\n  \"response\": \"আমরা আপনার অনুরোধ পেয়েছি। একজন স্বাস্থ্যকর্মী শীঘ্রই আপনার সাথে যোগাযোগ করবেন।\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/help-requests/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"help-requests",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{lastHelpRequestId}}",
+									"description": "Help request ID"
+								}
+							]
+						},
+						"description": "Update help request status and response"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Help Request",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/help-requests/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"help-requests",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{lastHelpRequestId}}",
+									"description": "Help request ID to delete"
+								}
+							]
+						},
+						"description": "Delete a help request"
+					},
+					"response": []
+				}
+			],
+			"description": "Anonymous help request system with ticket tracking"
+		},
+		{
+			"name": "Health Centers",
+			"item": [
+				{
+					"name": "Get All Health Centers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/health-centers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"health-centers"
+							]
+						},
+						"description": "Get all health centers"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Health Centers by Location",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/health-centers?division=ঢাকা&district=ঢাকা&type=hospital",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"health-centers"
+							],
+							"query": [
+								{
+									"key": "division",
+									"value": "ঢাকা"
+								},
+								{
+									"key": "district",
+									"value": "ঢাকা"
+								},
+								{
+									"key": "type",
+									"value": "hospital",
+									"description": "hospital, clinic, pharmacy, diagnostic"
+								}
+							]
+						},
+						"description": "Filter health centers by location and type"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Health Center",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/health-centers/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"health-centers",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "Health center ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Health Center",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"ঢাকা মেডিকেল কলেজ হাসপাতাল\",\n  \"type\": \"hospital\",\n  \"division\": \"ঢাকা\",\n  \"district\": \"ঢাকা\",\n  \"upazila\": \"মতিঝিল\",\n  \"address\": \"সেগুনবাগিচা, ঢাকা-১০০০\",\n  \"phone\": \"০২-৮৬২৬৮১২\",\n  \"services\": [\"জরুরি বিভাগ\", \"শিশু বিভাগ\", \"মা ও শিশু\", \"সার্জারি\"],\n  \"coordinates\": {\n    \"lat\": 23.7359,\n    \"lng\": 90.3985\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/health-centers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"health-centers"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Hospital and health center information with location mapping"
+		},
+		{
+			"name": "Mental Health",
+			"item": [
+				{
+					"name": "Get All Mental Health Records",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/mental-health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mental-health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Mental Health Assessment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"user123\",\n  \"assessmentDate\": \"2024-11-04\",\n  \"mood\": \"anxious\",\n  \"stressLevel\": 7,\n  \"sleepQuality\": \"poor\",\n  \"symptoms\": [\"মানসিক চাপ\", \"ঘুমের সমস্যা\", \"দুশ্চিন্তা\"],\n  \"notes\": \"কাজের চাপ বেশি। ঘুম ঠিকমত হচ্ছে না।\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mental-health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mental-health"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Mental health assessments and tracking"
+		},
+		{
+			"name": "Maternal Health",
+			"item": [
+				{
+					"name": "Get All Maternal Health Records",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/maternal-health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"maternal-health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Maternal Health Record",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"motherName\": \"ফাতেমা খাতুন\",\n  \"age\": 28,\n  \"pregnancyWeek\": 24,\n  \"lastCheckupDate\": \"2024-11-01\",\n  \"bloodPressure\": \"120/80\",\n  \"weight\": 62,\n  \"symptoms\": [\"সামান্য পিঠ ব্যথা\"],\n  \"nextCheckupDate\": \"2024-11-15\",\n  \"vitamins\": [\"ফলিক এসিড\", \"আয়রন\", \"ক্যালসিয়াম\"],\n  \"notes\": \"গর্ভাবস্থা স্বাভাবিক। নিয়মিত চেকআপ চলছে।\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/maternal-health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"maternal-health"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Maternal health tracking for pregnant women"
+		},
+		{
+			"name": "Symptom Checker",
+			"item": [
+				{
+					"name": "Get All Symptom Checks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/symptom-checks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"symptom-checks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Symptom Check",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"user123\",\n  \"symptoms\": [\"জ্বর\", \"মাথা ব্যথা\", \"শরীর ব্যথা\"],\n  \"severity\": \"moderate\",\n  \"duration\": \"৩ দিন\",\n  \"additionalInfo\": \"রাতে জ্বর বেশি হয়। দিনে কম থাকে।\",\n  \"recommendations\": [\"বিশ্রাম নিন\", \"পানি পান করুন\", \"প্যারাসিটামল খান\", \"৩ দিন পরও জ্বর থাকলে ডাক্তার দেখান\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/symptom-checks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"symptom-checks"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Symptom check records and analysis"
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Get All Events",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Event",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"বিনামূল্যে স্বাস্থ্য পরীক্ষা ক্যাম্প\",\n  \"description\": \"সকল বয়সের জন্য বিনামূল্যে স্বাস্থ্য পরীক্ষা এবং পরামর্শ।\",\n  \"date\": \"2024-11-15\",\n  \"time\": \"09:00 AM - 02:00 PM\",\n  \"location\": \"মিরপুর কমিউনিটি সেন্টার, ঢাকা\",\n  \"organizer\": \"মন বন্ধু টিম\",\n  \"type\": \"health-camp\",\n  \"services\": [\"রক্তচাপ পরীক্ষা\", \"ডায়াবেটিস পরীক্ষা\", \"ওজন পরিমাপ\", \"স্বাস্থ্য পরামর্শ\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Health awareness events and programs"
+		},
+		{
+			"name": "Workers",
+			"item": [
+				{
+					"name": "Get All Workers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/workers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"workers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Workers by Location",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/workers?division=ঢাকা&district=ঢাকা&specialization=maternal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"workers"
+							],
+							"query": [
+								{
+									"key": "division",
+									"value": "ঢাকা"
+								},
+								{
+									"key": "district",
+									"value": "ঢাকা"
+								},
+								{
+									"key": "specialization",
+									"value": "maternal"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Worker",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"ডা. রহিমা আক্তার\",\n  \"phone\": \"01711223344\",\n  \"specialization\": \"মা ও শিশু স্বাস্থ্য\",\n  \"division\": \"ঢাকা\",\n  \"district\": \"ঢাকা\",\n  \"upazila\": \"মিরপুর\",\n  \"experience\": \"১০ বছর\",\n  \"availability\": \"সোম-শনি, ৯টা-৫টা\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/workers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"workers"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Community health worker directory"
+		},
+		{
+			"name": "Statistics",
+			"item": [
+				{
+					"name": "Get Overview Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/statistics/overview",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"statistics",
+								"overview"
+							]
+						},
+						"description": "Get overall platform statistics"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Help Request Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/statistics/help-requests",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"statistics",
+								"help-requests"
+							]
+						},
+						"description": "Get help request statistics by status and urgency"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Health Center Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/statistics/health-centers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"statistics",
+								"health-centers"
+							]
+						},
+						"description": "Get health center statistics by type and location"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Worker Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/statistics/workers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"statistics",
+								"workers"
+							]
+						},
+						"description": "Get community health worker statistics"
+					},
+					"response": []
+				}
+			],
+			"description": "Health statistics and analytics"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
+}

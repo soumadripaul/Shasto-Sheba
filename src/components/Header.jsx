@@ -96,7 +96,7 @@ const Header = () => {
                   <li><Link to="/symptom-checker" onClick={closeDropdown}>লক্ষণ পরীক্ষা</Link></li>
                   <li><Link to="/health-events" onClick={closeDropdown}>স্বাস্থ্য শিবির</Link></li>
                   <li><Link to="/health-workers" onClick={closeDropdown}>স্বাস্থ্য কর্মী</Link></li>
-                  <li><Link to="/voice-assistant" onClick={closeDropdown}>ভয়েস সহায়ক</Link></li>
+                  <li><Link to="/voice-assistant" onClick={closeDropdown}>ভয়েস সহায়ক ও চ্যাটবট</Link></li>
                 </ul>
               )}
             </li>

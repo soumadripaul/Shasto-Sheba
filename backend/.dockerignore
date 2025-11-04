@@ -1,6 +1,30 @@
+# Backend Docker ignore file
 node_modules
 npm-debug.log
 .env
+.env.local
+.env*.local
 .DS_Store
 *.log
 .vscode
+.idea
+.git
+.gitignore
+coverage
+.nyc_output
+
+# Documentation files (optional for production)
+POSTMAN_GUIDE.md
+OPENAPI_POSTMAN_COMPARISON.md
+SWAGGER_SETUP.md
+
+# Keep important docs
+!API_DOCUMENTATION.md
+
+# Postman collections (optional)
+postman_collection.json
+postman_environment_*.json
+
+# Test/seed files (uncomment if not needed in production)
+# seed-*.js
+# test-*.js

@@ -8,13 +8,40 @@ dist
 build
 .git
 .gitignore
-README.md
 .vscode
 .idea
-*.md
-!docker-compose.yml
-!Dockerfile
 .DS_Store
 coverage
 .nyc_output
 *.log
+
+# Documentation files (not needed in production)
+VOICE_INPUT_FIX.md
+NETWORK_ERROR_FIX.md
+MERGED_VOICE_CHATBOT.md
+CHATBOT_SETUP.md
+CHATBOT_README.md
+CHATBOT_IMPLEMENTATION_SUMMARY.md
+CHATBOT_ARCHITECTURE.md
+UI_REDESIGN_SUMMARY.md
+UI_REDESIGN_CHECKLIST.md
+
+# Keep important docs
+!README.md
+!DESIGN_SYSTEM.md
+!DOCKER_README.md
+
+# Test files
+test-*.html
+test-*.js
+database-viewer.html
+view-database.sh
+public/test-api.html
+public/api-test-final.html
+
+# Postman collections (optional - uncomment to exclude)
+# backend/postman_collection.json
+# backend/postman_environment_*.json
+# backend/POSTMAN_GUIDE.md
+# backend/OPENAPI_POSTMAN_COMPARISON.md
+# backend/SWAGGER_SETUP.md
