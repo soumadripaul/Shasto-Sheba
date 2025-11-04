@@ -36,16 +36,20 @@
   cursor: pointer;
   transition: all 0.3s;
   font-family: 'SolaimanLipi', Arial, sans-serif;
+  color: #92400e;
+  font-weight: 600;
 }
 
 .tab-button:hover {
   background: #fef08a;
+  color: #78350f;
 }
 
 .tab-button.active {
   background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
   color: white;
   border-color: #ca8a04;
+  font-weight: 700;
 }
 
 .events-section,

@@ -8,19 +8,36 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(to bottom, #f7fafc 0%, #ffffff 50%, #f7fafc 100%);
+  background: transparent;
+  position: relative;
+}
+
+.App::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(20, 184, 166, 0.06) 0%, transparent 50%);
+  z-index: 0;
+  pointer-events: none;
 }
 
 .main-content {
   flex: 1;
   animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  z-index: 1;
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(40px);
   }
   to {
     opacity: 1;
@@ -41,26 +58,50 @@ button, a, .card, .mission-card, .option-card {
 }
 
 button:active, .card:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
-/* Typography */
+/* Enhanced Typography */
 .page-title {
-  font-size: 2.5rem;
+  font-size: 3rem;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
   font-family: 'SolaimanLipi', Arial, sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.25rem;
   animation: slideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--text-primary);
-  font-weight: 700;
+  font-weight: 800;
   background: var(--primary-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.page-title::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: var(--primary-gradient);
+  border-radius: var(--radius-full);
+  animation: expandWidth 0.8s ease-out 0.3s both;
+}
+
+@keyframes expandWidth {
+  from {
+    width: 0;
+  }
+  to {
+    width: 80px;
+  }
 }
 
 @keyframes slideDown {
@@ -76,15 +117,17 @@ button:active, .card:active {
 
 .page-subtitle {
   text-align: center;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   color: var(--text-secondary);
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   line-height: 1.8;
   font-family: 'SolaimanLipi', Arial, sans-serif;
   animation: fadeIn 0.8s ease-out 0.2s both;
-  max-width: 700px;
+  max-width: 750px;
   margin-left: auto;
   margin-right: auto;
+  font-weight: 500;
+  padding: 0 1rem;
 }
 
 @keyframes fadeIn {
@@ -97,9 +140,25 @@ button:active, .card:active {
 }
 
 .title-icon {
-  font-size: 3rem;
-  animation: float 3s ease-in-out infinite;
-  filter: drop-shadow(0 4px 8px rgba(102, 126, 234, 0.3));
+  font-size: 3.5rem;
+  animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(-180deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 @keyframes float {
@@ -111,20 +170,41 @@ button:active, .card:active {
   }
 }
 
-/* Card Styles */
+/* Enhanced Card Styles */
 .card {
-  background: white;
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.98);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
   transition: all var(--transition-base);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-base);
+}
+
+.card:hover::before {
+  transform: scaleX(1);
 }
 
 .card:hover {
   box-shadow: var(--shadow-xl);
-  transform: translateY(-4px);
-  border-color: rgba(102, 126, 234, 0.3);
+  transform: translateY(-6px) scale(1.02);
+  border-color: rgba(99, 102, 241, 0.3);
 }
 
 /* Loading States */

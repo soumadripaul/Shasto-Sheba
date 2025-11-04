@@ -40,6 +40,8 @@
   font-size: 1.3rem;
   font-family: 'SolaimanLipi', Arial, sans-serif;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  color: #1e293b;
+  font-weight: 600;
 }
 
 .tracking-option:hover {
@@ -49,6 +51,15 @@
 .tracking-option.selected {
   border-color: #ec4899;
   background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+  color: white;
+}
+
+.tracking-option span {
+  display: block;
+  font-weight: 600;
+}
+
+.tracking-option.selected span {
   color: white;
 }
 

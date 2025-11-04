@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Header.css';
 
@@ -12,27 +12,65 @@ import '../styles/Header.css';
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [dropdownTimer, setDropdownTimer] = useState(null);
+
+  // Cleanup timer on component unmount
+  useEffect(() => {
+    return () => {
+      if (dropdownTimer) {
+        clearTimeout(dropdownTimer);
+      }
+    };
+  }, [dropdownTimer]);
+
+  const openDropdown = () => {
+    // Clear any existing timer
+    if (dropdownTimer) {
+      clearTimeout(dropdownTimer);
+    }
+    setIsDropdownOpen(true);
+  };
+
+  const scheduleCloseDropdown = () => {
+    // Set timer to close dropdown after 2.5 seconds
+    const timer = setTimeout(() => {
+      setIsDropdownOpen(false);
+    }, 2500); // 2.5 seconds
+    setDropdownTimer(timer);
+  };
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+    if (isDropdownOpen) {
+      setIsDropdownOpen(false);
+      if (dropdownTimer) {
+        clearTimeout(dropdownTimer);
+      }
+    } else {
+      openDropdown();
+      scheduleCloseDropdown();
+    }
   };
 
   const closeDropdown = () => {
     setIsDropdownOpen(false);
+    if (dropdownTimer) {
+      clearTimeout(dropdownTimer);
+    }
+  };
+
+  const handleMouseEnter = () => {
+    openDropdown();
+  };
+
+  const handleMouseLeave = () => {
+    scheduleCloseDropdown();
   };
 
   return (
     <header className="header">
       <div className="header-container">
         <Link to="/" className="logo">
-          <span className="logo-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20" cy="20" r="18" fill="#4CAF50" stroke="#ffffff" strokeWidth="2"/>
-              <path d="M20 10 L20 30 M10 20 L30 20" stroke="#ffffff" strokeWidth="4" strokeLinecap="round"/>
-              <circle cx="20" cy="20" r="3" fill="#ffffff"/>
-            </svg>
-          </span>
-          <span className="logo-text">মনবন্ধু</span>
+          <span className="logo-text">🩺মনবন্ধু</span>
         </Link>
         <nav className="nav">
           <button className="nav-toggle" onClick={() => {
@@ -47,8 +85,8 @@ const Header = () => {
             <li><Link to="/help-request">সাহায্য চাই</Link></li>
             <li><Link to="/health-tips">স্বাস্থ্য টিপস</Link></li>
             <li className="dropdown" 
-                onMouseEnter={() => setIsDropdownOpen(true)}
-                onMouseLeave={() => setIsDropdownOpen(false)}>
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}>
               <button className="dropdown-toggle" onClick={toggleDropdown}>
                 আরও দেখুন <span className="dropdown-arrow">▼</span>
               </button>
