@@ -6,13 +6,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:5000
     container_name: monbondhu-web
     ports:
       - "3000:80"
     restart: unless-stopped
     environment:
       - NODE_ENV=production
-      - VITE_API_URL=http://localhost:5000
     networks:
       - monbondhu-network
     depends_on:

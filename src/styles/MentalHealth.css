@@ -1,53 +1,83 @@
 .mental-health-container {
   min-height: calc(100vh - 200px);
   padding: 2rem 1rem;
-  background: linear-gradient(to bottom, #ddd6fe, #c4b5fd);
-  animation: gradientShift 10s ease infinite;
+  background: linear-gradient(to bottom, #f7fafc 0%, #ffffff 50%, #f7fafc 100%);
+  animation: fadeIn 0.6s ease-out;
 }
 
-@keyframes gradientShift {
-  0%, 100% {
-    background-position: 0% 50%;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-  50% {
-    background-position: 100% 50%;
+  to {
+    opacity: 1;
   }
 }
 
 .mental-health-content {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .page-title {
   font-size: 2.5rem;
   text-align: center;
-  color: #1e40af;
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
   font-family: 'SolaimanLipi', Arial, sans-serif;
+  font-weight: 800;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .title-icon {
   font-size: 3rem;
+  filter: drop-shadow(0 4px 8px rgba(102, 126, 234, 0.3));
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .page-subtitle {
   text-align: center;
-  font-size: 1.1rem;
-  color: #475569;
+  font-size: 1.15rem;
+  color: var(--text-secondary);
   margin-bottom: 3rem;
-  line-height: 1.6;
+  line-height: 1.8;
   font-family: 'SolaimanLipi', Arial, sans-serif;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .mood-selector {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  gap: 1.5rem;
   margin: 3rem 0;
   flex-wrap: wrap;
 }
@@ -55,16 +85,16 @@
 .mood-button {
   background: white;
   border: 3px solid transparent;
-  border-radius: 20px;
+  border-radius: var(--radius-xl);
   padding: 2rem 1.5rem;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  min-width: 150px;
+  gap: 0.75rem;
+  box-shadow: var(--shadow-md);
+  min-width: 160px;
   position: relative;
   overflow: hidden;
 }
@@ -84,19 +114,21 @@
 }
 
 .mood-button:hover::before {
-  width: 200px;
-  height: 200px;
+  width: 250px;
+  height: 250px;
 }
 
 .mood-button:hover {
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--mood-color);
 }
 
 .mood-button.selected {
   border-color: var(--mood-color);
   background: var(--mood-color);
-  animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
 }
 
 @keyframes popIn {
@@ -104,7 +136,7 @@
     transform: scale(0.8);
   }
   50% {
-    transform: scale(1.1);
+    transform: scale(1.15);
   }
   100% {
     transform: scale(1);
@@ -113,31 +145,41 @@
 
 .mood-button.selected .mood-label {
   color: white;
+  font-weight: 700;
 }
 
 .mood-emoji {
   font-size: 4rem;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.mood-button:hover .mood-emoji,
+.mood-button.selected .mood-emoji {
+  transform: scale(1.2) rotate(8deg);
 }
 
 .mood-label {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #334155;
+  color: var(--text-primary);
   font-family: 'SolaimanLipi', Arial, sans-serif;
+  transition: color 0.3s ease;
 }
 
 .success-message {
-  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
   color: white;
-  padding: 1rem;
-  border-radius: 10px;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
   text-align: center;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   margin: 2rem auto;
-  max-width: 400px;
+  max-width: 450px;
   animation: slideDownBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   font-family: 'SolaimanLipi', Arial, sans-serif;
-  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 8px 24px rgba(72, 187, 120, 0.3);
+  font-weight: 600;
 }
 
 @keyframes slideDownBounce {
@@ -160,17 +202,27 @@
 .mood-history {
   background: white;
   padding: 2rem;
-  border-radius: 15px;
+  border-radius: var(--radius-xl);
   margin-top: 3rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  transition: all var(--transition-base);
+}
+
+.mood-history:hover {
+  box-shadow: var(--shadow-lg);
 }
 
 .mood-history h2 {
-  font-size: 1.8rem;
-  color: #1e40af;
-  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  margin-bottom: 2rem;
   text-align: center;
   font-family: 'SolaimanLipi', Arial, sans-serif;
+  font-weight: 800;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .calendar-view {

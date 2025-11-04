@@ -165,6 +165,90 @@ class ApiService {
   async getStatistics() {
     return this.request('/api/statistics');
   }
+
+  // Bangladesh Locations API
+  async getDivisions() {
+    try {
+      const response = await fetch('https://bdapi.vercel.app/api/v.1/division');
+      const data = await response.json();
+      console.log('Divisions API Response:', data);
+      
+      // If API fails, return hardcoded data
+      if (!data || !data.data || data.data.length === 0) {
+        return {
+          data: [
+            { id: "1", name: "Chattagram", bn_name: "চট্টগ্রাম" },
+            { id: "2", name: "Rajshahi", bn_name: "রাজশাহী" },
+            { id: "3", name: "Khulna", bn_name: "খুলনা" },
+            { id: "4", name: "Barisal", bn_name: "বরিশাল" },
+            { id: "5", name: "Sylhet", bn_name: "সিলেট" },
+            { id: "6", name: "Dhaka", bn_name: "ঢাকা" },
+            { id: "7", name: "Rangpur", bn_name: "রংপুর" },
+            { id: "8", name: "Mymensingh", bn_name: "ময়মনসিংহ" }
+          ]
+        };
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error fetching divisions:', error);
+      // Return hardcoded fallback data
+      return {
+        data: [
+          { id: "1", name: "Chattagram", bn_name: "চট্টগ্রাম" },
+          { id: "2", name: "Rajshahi", bn_name: "রাজশাহী" },
+          { id: "3", name: "Khulna", bn_name: "খুলনা" },
+          { id: "4", name: "Barisal", bn_name: "বরিশাল" },
+          { id: "5", name: "Sylhet", bn_name: "সিলেট" },
+          { id: "6", name: "Dhaka", bn_name: "ঢাকা" },
+          { id: "7", name: "Rangpur", bn_name: "রংপুর" },
+          { id: "8", name: "Mymensingh", bn_name: "ময়মনসিংহ" }
+        ]
+      };
+    }
+  }
+
+  async getDistricts(divisionId = null) {
+    try {
+      const url = divisionId 
+        ? `https://bdapi.vercel.app/api/v.1/division/${divisionId}`
+        : 'https://bdapi.vercel.app/api/v.1/district';
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log('Districts API Response:', data);
+      
+      // If API fails or returns empty, return fallback
+      if (!data || !data.data || data.data.length === 0) {
+        return { data: [] };
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error fetching districts:', error);
+      return { data: [] };
+    }
+  }
+
+  async getUpazilas(districtId = null) {
+    try {
+      const url = districtId
+        ? `https://bdapi.vercel.app/api/v.1/district/${districtId}`
+        : 'https://bdapi.vercel.app/api/v.1/upazila';
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log('Upazilas API Response:', data);
+      
+      // If API fails or returns empty, return fallback
+      if (!data || !data.data || data.data.length === 0) {
+        return { data: [] };
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error fetching upazilas:', error);
+      return { data: [] };
+    }
+  }
 }
 
 const apiService = new ApiService(API_BASE_URL);

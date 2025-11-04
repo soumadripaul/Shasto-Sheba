@@ -9,40 +9,170 @@ const HealthMap = () => {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedUpazila, setSelectedUpazila] = useState('');
   const [selectedType, setSelectedType] = useState('');
+  
+  // Bangladesh location data - using local data
+  const [divisions, setDivisions] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [upazilas, setUpazilas] = useState([]);
+  const [loadingLocations, setLoadingLocations] = useState(false);
 
   useEffect(() => {
     // Load health centers from JSON (works offline)
     setHealthCenters(healthCentersData);
     setFilteredCenters(healthCentersData);
+    
+    // Load divisions from API
+    loadDivisions();
   }, []);
+
+  const loadDivisions = async () => {
+    try {
+      setLoadingLocations(true);
+      console.log('🔵 Loading divisions from API...');
+      
+      const response = await fetch('https://bdapi.vercel.app/api/v.1/division');
+      const data = await response.json();
+      
+      console.log('✅ Divisions API response:', data);
+      
+      if (data && data.data && data.data.length > 0) {
+        setDivisions(data.data);
+        console.log('✅ Loaded', data.data.length, 'divisions');
+      }
+    } catch (error) {
+      console.error('❌ Error loading divisions:', error);
+    } finally {
+      setLoadingLocations(false);
+    }
+  };
+
+  const loadDistricts = async (divisionId) => {
+    try {
+      setLoadingLocations(true);
+      console.log('🔵 Loading districts for division:', divisionId);
+      
+      const response = await fetch(`https://bdapi.vercel.app/api/v.1/district/${divisionId}`);
+      const data = await response.json();
+      
+      console.log('✅ Districts API response:', data);
+      
+      if (data && data.data && data.data.length > 0) {
+        setDistricts(data.data);
+        console.log('✅ Loaded', data.data.length, 'districts');
+      }
+    } catch (error) {
+      console.error('❌ Error loading districts:', error);
+    } finally {
+      setLoadingLocations(false);
+    }
+  };
+
+  const loadUpazilas = async (districtId) => {
+    try {
+      setLoadingLocations(true);
+      console.log('🔵 === UPAZILA LOADING START ===');
+      console.log('🔵 District ID:', districtId);
+      console.log('🔵 API URL:', `https://bdapi.vercel.app/api/v.1/upazila/${districtId}`);
+      
+      // Correct endpoint for upazilas
+      const response = await fetch(`https://bdapi.vercel.app/api/v.1/upazila/${districtId}`);
+      
+      console.log('📡 Response Status:', response.status);
+      console.log('📡 Response OK:', response.ok);
+      
+      const data = await response.json();
+      
+      console.log('✅ Upazilas API response:', data);
+      console.log('📊 Response structure:', {
+        hasData: !!data,
+        hasDataProperty: !!data?.data,
+        dataLength: data?.data?.length,
+        dataType: typeof data?.data,
+        isArray: Array.isArray(data?.data),
+        firstItem: data?.data?.[0]
+      });
+      
+      if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
+        setUpazilas(data.data);
+        console.log('✅ Successfully loaded', data.data.length, 'upazilas');
+        console.log('✅ First upazila:', data.data[0]);
+      } else {
+        console.warn('⚠️ No upazilas found for district:', districtId);
+        console.warn('⚠️ Response data:', data);
+        setUpazilas([]);
+      }
+    } catch (error) {
+      console.error('❌ Error loading upazilas:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        stack: error.stack
+      });
+      setUpazilas([]);
+    } finally {
+      setLoadingLocations(false);
+      console.log('🏁 === UPAZILA LOADING END ===');
+    }
+  };
 
   useEffect(() => {
     // Filter centers based on selected criteria
     let filtered = healthCenters;
 
     if (selectedDivision) {
-      filtered = filtered.filter(center => center.division === selectedDivision);
+      // Find division name (can be id, name, or bn_name)
+      const divisionObj = divisions.find(d => 
+        d.id === selectedDivision || 
+        d._id === selectedDivision || 
+        d.name === selectedDivision ||
+        d.bn_name === selectedDivision ||
+        d.division === selectedDivision
+      );
+      const divisionName = divisionObj?.bn_name || divisionObj?.name || divisionObj?.division || selectedDivision;
+      filtered = filtered.filter(center => 
+        center.division === divisionName || 
+        center.division.includes(divisionName) ||
+        divisionName.includes(center.division)
+      );
     }
     if (selectedDistrict) {
-      filtered = filtered.filter(center => center.district === selectedDistrict);
+      // Find district name
+      const districtObj = districts.find(d => 
+        d.id === selectedDistrict || 
+        d._id === selectedDistrict || 
+        d.name === selectedDistrict ||
+        d.bn_name === selectedDistrict ||
+        d.district === selectedDistrict
+      );
+      const districtName = districtObj?.bn_name || districtObj?.name || districtObj?.district || selectedDistrict;
+      filtered = filtered.filter(center => 
+        center.district === districtName ||
+        center.district.includes(districtName) ||
+        districtName.includes(center.district)
+      );
     }
     if (selectedUpazila) {
-      filtered = filtered.filter(center => center.upazila === selectedUpazila);
+      // Find upazila name
+      const upazilaObj = upazilas.find(u => 
+        u.id === selectedUpazila || 
+        u._id === selectedUpazila || 
+        u.name === selectedUpazila ||
+        u.bn_name === selectedUpazila ||
+        u.upazila === selectedUpazila
+      );
+      const upazilaName = upazilaObj?.bn_name || upazilaObj?.name || upazilaObj?.upazila || selectedUpazila;
+      filtered = filtered.filter(center => 
+        center.upazila === upazilaName ||
+        center.upazila.includes(upazilaName) ||
+        upazilaName.includes(center.upazila)
+      );
     }
     if (selectedType) {
       filtered = filtered.filter(center => center.type === selectedType);
     }
 
     setFilteredCenters(filtered);
-  }, [selectedDivision, selectedDistrict, selectedUpazila, selectedType, healthCenters]);
+  }, [selectedDivision, selectedDistrict, selectedUpazila, selectedType, healthCenters, divisions, districts, upazilas]);
 
-  const divisions = [...new Set(healthCenters.map(center => center.division))];
-  const districts = selectedDivision 
-    ? [...new Set(healthCenters.filter(c => c.division === selectedDivision).map(c => c.district))]
-    : [];
-  const upazilas = selectedDistrict
-    ? [...new Set(healthCenters.filter(c => c.district === selectedDistrict).map(c => c.upazila))]
-    : [];
   const types = [...new Set(healthCenters.map(center => center.type))];
 
   const resetFilters = () => {
@@ -50,6 +180,36 @@ const HealthMap = () => {
     setSelectedDistrict('');
     setSelectedUpazila('');
     setSelectedType('');
+    setDistricts([]);
+    setUpazilas([]);
+  };
+
+  const handleDivisionChange = (divisionId) => {
+    setSelectedDivision(divisionId);
+    setSelectedDistrict('');
+    setSelectedUpazila('');
+    setDistricts([]);
+    setUpazilas([]);
+    if (divisionId) {
+      loadDistricts(divisionId);
+    }
+  };
+
+  const handleDistrictChange = (districtId) => {
+    console.log('🏪 === DISTRICT CHANGE ===');
+    console.log('🏪 Selected District ID:', districtId);
+    console.log('🏪 District ID type:', typeof districtId);
+    
+    setSelectedDistrict(districtId);
+    setSelectedUpazila('');
+    setUpazilas([]);
+    
+    if (districtId) {
+      console.log('🏪 Calling loadUpazilas with:', districtId);
+      loadUpazilas(districtId);
+    } else {
+      console.log('🏪 No district selected, skipping upazila load');
+    }
   };
 
   const getTypeIcon = (type) => {
@@ -79,39 +239,59 @@ const HealthMap = () => {
 
         <div className="filter-section">
           <h2>এলাকা নির্বাচন করুন</h2>
+          
+          {/* Debug Info */}
+          <div style={{
+            background: '#f0f9ff',
+            padding: '10px',
+            borderRadius: '8px',
+            marginBottom: '15px',
+            fontSize: '14px',
+            color: '#0369a1'
+          }}>
+            📊 ডেটা স্ট্যাটাস: বিভাগ {divisions.length}টি | জেলা {districts.length}টি | উপজেলা {upazilas.length}টি
+            {loadingLocations && ' | ⏳ লোড হচ্ছে...'}
+          </div>
+          
           <div className="filter-grid">
             <div className="filter-group">
               <label>বিভাগ</label>
               <select 
                 value={selectedDivision} 
-                onChange={(e) => {
-                  setSelectedDivision(e.target.value);
-                  setSelectedDistrict('');
-                  setSelectedUpazila('');
-                }}
+                onChange={(e) => handleDivisionChange(e.target.value)}
+                disabled={loadingLocations}
               >
                 <option value="">সব বিভাগ</option>
-                {divisions.map(division => (
-                  <option key={division} value={division}>{division}</option>
+                {divisions.map((division) => (
+                  <option 
+                    key={division.id || division._id || division.division} 
+                    value={division.id || division._id || division.division}
+                  >
+                    {division.bn_name || division.name || division.division}
+                  </option>
                 ))}
               </select>
+              {loadingLocations && !districts.length && <span className="loading-text">লোড হচ্ছে...</span>}
             </div>
 
             <div className="filter-group">
               <label>জেলা</label>
               <select 
                 value={selectedDistrict} 
-                onChange={(e) => {
-                  setSelectedDistrict(e.target.value);
-                  setSelectedUpazila('');
-                }}
-                disabled={!selectedDivision}
+                onChange={(e) => handleDistrictChange(e.target.value)}
+                disabled={!selectedDivision || loadingLocations}
               >
                 <option value="">সব জেলা</option>
-                {districts.map(district => (
-                  <option key={district} value={district}>{district}</option>
+                {districts.map((district) => (
+                  <option 
+                    key={district.id || district._id || district.district} 
+                    value={district.id || district._id || district.district}
+                  >
+                    {district.bn_name || district.name || district.district}
+                  </option>
                 ))}
               </select>
+              {loadingLocations && districts.length === 0 && selectedDivision && <span className="loading-text">লোড হচ্ছে...</span>}
             </div>
 
             <div className="filter-group">
@@ -119,13 +299,19 @@ const HealthMap = () => {
               <select 
                 value={selectedUpazila} 
                 onChange={(e) => setSelectedUpazila(e.target.value)}
-                disabled={!selectedDistrict}
+                disabled={!selectedDistrict || loadingLocations}
               >
                 <option value="">সব উপজেলা</option>
-                {upazilas.map(upazila => (
-                  <option key={upazila} value={upazila}>{upazila}</option>
+                {upazilas.map((upazila) => (
+                  <option 
+                    key={upazila.id || upazila._id || upazila.upazila} 
+                    value={upazila.id || upazila._id || upazila.upazila}
+                  >
+                    {upazila.bn_name || upazila.name || upazila.upazila}
+                  </option>
                 ))}
               </select>
+              {loadingLocations && upazilas.length === 0 && selectedDistrict && <span className="loading-text">লোড হচ্ছে...</span>}
             </div>
 
             <div className="filter-group">

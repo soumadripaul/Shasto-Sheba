@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bangladesh API Test - সরাসরি টেস্ট</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .success {
+            border-color: #4CAF50;
+            background: #f1f8f4;
+        }
+        .error {
+            border-color: #f44336;
+            background: #fef1f1;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #0b7dda;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 5px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇧🇩 Bangladesh API - সরাসরি টেস্ট</h1>
+        
+        <div>
+            <button onclick="testDivisions()">🔵 বিভাগ লোড করুন</button>
+            <button onclick="testAllDistricts()">🟢 সব জেলা লোড করুন</button>
+            <button onclick="clearResults()">🗑️ ক্লিয়ার করুন</button>
+        </div>
+
+        <div id="divisions-dropdown" style="display:none; margin-top: 20px;">
+            <label>বিভাগ নির্বাচন করুন:</label>
+            <select id="division-select" onchange="loadDistrictsForDivision()">
+                <option value="">-- নির্বাচন করুন --</option>
+            </select>
+        </div>
+
+        <div id="districts-dropdown" style="display:none; margin-top: 20px;">
+            <label>জেলা নির্বাচন করুন:</label>
+            <select id="district-select" onchange="loadUpazilasForDistrict()">
+                <option value="">-- নির্বাচন করুন --</option>
+            </select>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+        let divisionsData = [];
+        let districtsData = [];
+
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+        }
+
+        function addResult(title, data, isSuccess = true) {
+            const className = isSuccess ? 'success' : 'error';
+            const icon = isSuccess ? '✅' : '❌';
+            
+            resultsDiv.innerHTML += `
+                <div class="test-section ${className}">
+                    <h3>${icon} ${title}</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        async function testDivisions() {
+            try {
+                addResult('🔄 বিভাগ লোড হচ্ছে...', { status: 'Loading...' });
+                
+                const response = await fetch('https://bdapi.vercel.app/api/v.1/division');
+                const data = await response.json();
+                
+                clearResults();
+                addResult('বিভাগ API রেসপন্স', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    dataCount: data.data?.length || 0,
+                    data: data
+                }, true);
+
+                if (data.data && data.data.length > 0) {
+                    divisionsData = data.data;
+                    const select = document.getElementById('division-select');
+                    select.innerHTML = '<option value="">-- নির্বাচন করুন --</option>';
+                    
+                    data.data.forEach(div => {
+                        const option = document.createElement('option');
+                        option.value = div.id;
+                        option.textContent = `${div.bn_name} (${div.name})`;
+                        select.appendChild(option);
+                    });
+                    
+                    document.getElementById('divisions-dropdown').style.display = 'block';
+                }
+            } catch (error) {
+                clearResults();
+                addResult('বিভাগ API Error', {
+                    error: error.message,
+                    stack: error.stack
+                }, false);
+            }
+        }
+
+        async function testAllDistricts() {
+            try {
+                addResult('🔄 সব জেলা লোড হচ্ছে...', { status: 'Loading...' });
+                
+                const response = await fetch('https://bdapi.vercel.app/api/v.1/district');
+                const data = await response.json();
+                
+                clearResults();
+                addResult('সব জেলা API রেসপন্স', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    dataCount: data.data?.length || 0,
+                    firstFew: data.data?.slice(0, 5) || []
+                }, true);
+            } catch (error) {
+                clearResults();
+                addResult('জেলা API Error', {
+                    error: error.message,
+                    stack: error.stack
+                }, false);
+            }
+        }
+
+        async function loadDistrictsForDivision() {
+            const divisionId = document.getElementById('division-select').value;
+            if (!divisionId) return;
+
+            try {
+                addResult(`🔄 বিভাগ ${divisionId} এর জেলা লোড হচ্ছে...`, { status: 'Loading...' });
+                
+                const response = await fetch(`https://bdapi.vercel.app/api/v.1/division/${divisionId}`);
+                const data = await response.json();
+                
+                clearResults();
+                addResult(`বিভাগ ${divisionId} এর জেলাসমূহ`, {
+                    status: response.status,
+                    divisionId: divisionId,
+                    dataCount: data.data?.length || 0,
+                    data: data
+                }, true);
+
+                if (data.data && data.data.length > 0) {
+                    districtsData = data.data;
+                    const select = document.getElementById('district-select');
+                    select.innerHTML = '<option value="">-- নির্বাচন করুন --</option>';
+                    
+                    data.data.forEach(dist => {
+                        const option = document.createElement('option');
+                        option.value = dist.id;
+                        option.textContent = `${dist.bn_name || dist.name}`;
+                        select.appendChild(option);
+                    });
+                    
+                    document.getElementById('districts-dropdown').style.display = 'block';
+                }
+            } catch (error) {
+                clearResults();
+                addResult(`বিভাগ ${divisionId} জেলা Error`, {
+                    error: error.message
+                }, false);
+            }
+        }
+
+        async function loadUpazilasForDistrict() {
+            const districtId = document.getElementById('district-select').value;
+            if (!districtId) return;
+
+            try {
+                addResult(`🔄 জেলা ${districtId} এর উপজেলা লোড হচ্ছে...`, { status: 'Loading...' });
+                
+                const response = await fetch(`https://bdapi.vercel.app/api/v.1/district/${districtId}`);
+                const data = await response.json();
+                
+                clearResults();
+                addResult(`জেলা ${districtId} এর উপজেলাসমূহ`, {
+                    status: response.status,
+                    districtId: districtId,
+                    dataCount: data.data?.length || 0,
+                    data: data
+                }, true);
+            } catch (error) {
+                clearResults();
+                addResult(`জেলা ${districtId} উপজেলা Error`, {
+                    error: error.message
+                }, false);
+            }
+        }
+
+        // Auto-run on page load
+        window.addEventListener('load', () => {
+            addResult('পেজ লোড হয়েছে', {
+                message: 'উপরের বাটনে ক্লিক করে API টেস্ট করুন',
+                apiBase: 'https://bdapi.vercel.app/api/v.1/'
+            });
+        });
+    </script>
+</body>
+</html>

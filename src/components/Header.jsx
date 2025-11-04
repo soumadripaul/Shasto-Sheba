@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Header.css';
 
+// বিভিন্ন logo icon options (যেকোনো একটি uncomment করে ব্যবহার করুন)
+// import { MedicalCrossIcon } from './LogoIcons'; // ✅ Default (Green Medical Cross)
+// import { HeartPulseIcon } from './LogoIcons'; // ❤️ Heart with Pulse
+// import { StethoscopeIcon } from './LogoIcons'; // 🩺 Stethoscope
+// import { ShieldHeartIcon } from './LogoIcons'; // 🛡️ Shield with Heart
+// import { HandHeartIcon } from './LogoIcons'; // 🤲 Caring Hand
+// import { LotusIcon } from './LogoIcons'; // 🪷 Lotus Flower
+
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -17,7 +25,13 @@ const Header = () => {
     <header className="header">
       <div className="header-container">
         <Link to="/" className="logo">
-          <span className="logo-icon">🩺</span>
+          <span className="logo-icon">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="20" r="18" fill="#4CAF50" stroke="#ffffff" strokeWidth="2"/>
+              <path d="M20 10 L20 30 M10 20 L30 20" stroke="#ffffff" strokeWidth="4" strokeLinecap="round"/>
+              <circle cx="20" cy="20" r="3" fill="#ffffff"/>
+            </svg>
+          </span>
           <span className="logo-text">মনবন্ধু</span>
         </Link>
         <nav className="nav">

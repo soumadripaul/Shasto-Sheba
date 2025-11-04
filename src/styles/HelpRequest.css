@@ -1,62 +1,118 @@
 .help-request-container {
   min-height: calc(100vh - 200px);
   padding: 2rem 1rem;
-  background: linear-gradient(to bottom, #ddd6fe, #c4b5fd);
+  background: linear-gradient(to bottom, #f7fafc 0%, #ffffff 50%, #f7fafc 100%);
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .help-request-content {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .main-options {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   margin: 3rem 0;
 }
 
 .option-card {
   background: white;
-  border: none;
-  border-radius: 15px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-xl);
   padding: 3rem 2rem;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.option-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-gradient);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.option-card:hover::before {
+  opacity: 0.05;
 }
 
 .option-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  transform: translateY(-12px);
+  box-shadow: var(--shadow-xl);
 }
 
 .option-card.create:hover {
-  border: 3px solid #3b82f6;
+  border-color: #4299e1;
+  box-shadow: 0 12px 28px rgba(66, 153, 225, 0.3);
 }
 
 .option-card.check:hover {
-  border: 3px solid #10b981;
+  border-color: #48bb78;
+  box-shadow: 0 12px 28px rgba(72, 187, 120, 0.3);
 }
 
 .option-icon {
-  font-size: 4rem;
+  font-size: 4.5rem;
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+  transition: transform 0.4s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.option-card:hover .option-icon {
+  transform: scale(1.2) rotate(5deg);
 }
 
 .option-card h3 {
   font-size: 1.5rem;
-  color: #333;
-  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
   font-family: 'SolaimanLipi', Arial, sans-serif;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
 }
 
 .option-card p {
-  color: #666;
-  font-size: 1rem;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
   font-family: 'SolaimanLipi', Arial, sans-serif;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
 }
 
 .back-button {
