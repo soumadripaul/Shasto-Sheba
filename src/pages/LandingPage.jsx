@@ -1,8 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import apiService from '../services/api';
 import '../styles/LandingPage.css';
 
 const LandingPage = () => {
+  const [statistics, setStatistics] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStatistics();
+  }, []);
+
+  const fetchStatistics = async () => {
+    try {
+      const response = await apiService.getStatistics();
+      if (response.success) {
+        setStatistics(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching statistics:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const missions = [
     {
       icon: '😊',
@@ -143,6 +164,99 @@ return (
                     );
                 })}
             </div>
+        </section>
+
+        <section className="statistics">
+          <h2 className="statistics-title">আমাদের সেবার পরিসংখ্যান</h2>
+          {loading ? (
+            <div className="loading-spinner">লোড হচ্ছে...</div>
+          ) : statistics ? (
+            <div className="statistics-grid">
+              <div className="stat-card stat-primary">
+                <div className="stat-icon">📊</div>
+                <div className="stat-content">
+                  <h3 className="stat-number">{statistics.totalCheckinsThisWeek}</h3>
+                  <p className="stat-label">এই সপ্তাহে চেক-ইন</p>
+                  <div className="stat-breakdown">
+                    <span>মানসিক: {statistics.mentalHealthCheckins}</span>
+                    <span>মাতৃস্বাস্থ্য: {statistics.maternalHealthCheckins}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="stat-card stat-success">
+                <div className="stat-icon">🏥</div>
+                <div className="stat-content">
+                  <h3 className="stat-number">{statistics.totalHealthCenters}</h3>
+                  <p className="stat-label">স্বাস্থ্য সেবা কেন্দ্র</p>
+                  <p className="stat-desc">সারাদেশে উপলব্ধ</p>
+                </div>
+              </div>
+
+              <div className="stat-card stat-warning">
+                <div className="stat-icon">🆘</div>
+                <div className="stat-content">
+                  <h3 className="stat-number">{statistics.totalHelpRequests}</h3>
+                  <p className="stat-label">মোট সাহায্যের অনুরোধ</p>
+                  <div className="stat-breakdown">
+                    <span className="stat-highlight">
+                      এই সপ্তাহে: {statistics.helpRequestsThisWeek}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="stat-card stat-info">
+                <div className="stat-icon">📅</div>
+                <div className="stat-content">
+                  <h3 className="stat-number">{statistics.totalEvents}</h3>
+                  <p className="stat-label">স্বাস্থ্য শিবির</p>
+                  <div className="stat-breakdown">
+                    <span className="stat-highlight">
+                      আসন্ন: {statistics.upcomingEvents}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="stat-card stat-accent">
+                <div className="stat-icon">👨‍⚕️</div>
+                <div className="stat-content">
+                  <h3 className="stat-number">{statistics.totalWorkers}</h3>
+                  <p className="stat-label">স্বাস্থ্য কর্মী</p>
+                  <p className="stat-desc">প্রশিক্ষিত কর্মী</p>
+                </div>
+              </div>
+
+              {statistics.moodDistribution && statistics.moodDistribution.length > 0 && (
+                <div className="stat-card stat-chart">
+                  <div className="stat-content">
+                    <h3 className="chart-title">মুড বিতরণ</h3>
+                    <div className="mood-chart">
+                      {statistics.moodDistribution.slice(0, 5).map((mood, index) => (
+                        <div key={index} className="mood-bar">
+                          <div className="mood-label">
+                            <span>{mood._id}</span>
+                            <span>{mood.count}</span>
+                          </div>
+                          <div className="bar-container">
+                            <div 
+                              className="bar-fill"
+                              style={{ 
+                                width: `${(mood.count / statistics.moodDistribution[0].count) * 100}%` 
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="no-data">তথ্য উপলব্ধ নেই</div>
+          )}
         </section>
 
         <section className="cta">

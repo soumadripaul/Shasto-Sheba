@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import apiService from '../services/api';
 import '../styles/HelpRequest.css';
 
 const HelpRequest = () => {
@@ -7,6 +8,7 @@ const HelpRequest = () => {
   const [generatedTicket, setGeneratedTicket] = useState(null);
   const [searchCode, setSearchCode] = useState('');
   const [foundTicket, setFoundTicket] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const generateTicketCode = () => {
     const colors = ['নীল', 'লাল', 'সবুজ', 'হলুদ', 'কালো', 'সাদা', 'বেগুনি'];
@@ -19,68 +21,137 @@ const HelpRequest = () => {
     return `${color}-${animal}-${number}`;
   };
 
-  const handleSubmitRequest = () => {
+  const handleSubmitRequest = async () => {
     if (!message.trim()) {
       alert('অনুগ্রহ করে আপনার বার্তা লিখুন');
       return;
     }
 
+    setIsSubmitting(true);
     const code = generateTicketCode();
-    const ticket = {
-      code: code,
-      message: message,
-      date: new Date().toISOString(),
-      status: 'pending',
-      response: null
-    };
 
-    // Save to localStorage
-    const existingTickets = JSON.parse(localStorage.getItem('helpTickets') || '[]');
-    existingTickets.push(ticket);
-    localStorage.setItem('helpTickets', JSON.stringify(existingTickets));
+    try {
+      // Submit to backend API with anonymous data
+      const response = await apiService.createHelpRequest({
+        name: 'Anonymous',
+        phone: 'Not provided',
+        location: 'Not specified',
+        requestType: 'other',
+        description: message,
+        urgency: 'medium',
+        ticketCode: code  // Save the code in database
+      });
 
-    // Send anonymous data to server (if online)
-    if (navigator.onLine) {
-      // fetch('/api/help-request', { method: 'POST', body: JSON.stringify({ event: 'help_request' }) })
-      console.log('Anonymous help request logged');
+      if (response.success) {
+        const ticket = {
+          code: code,
+          id: response.data._id,
+          message: message,
+          date: new Date().toISOString(),
+          status: response.data.status,
+          response: null
+        };
+
+        // Save to localStorage as backup
+        const existingTickets = JSON.parse(localStorage.getItem('helpTickets') || '[]');
+        existingTickets.push(ticket);
+        localStorage.setItem('helpTickets', JSON.stringify(existingTickets));
+
+        setGeneratedTicket(ticket);
+        setMessage('');
+        setCurrentView('success');
+      }
+    } catch (error) {
+      console.error('Error submitting help request:', error);
+      
+      // Fallback to localStorage only if API fails
+      const ticket = {
+        code: code,
+        message: message,
+        date: new Date().toISOString(),
+        status: 'pending',
+        response: null,
+        offline: true
+      };
+
+      const existingTickets = JSON.parse(localStorage.getItem('helpTickets') || '[]');
+      existingTickets.push(ticket);
+      localStorage.setItem('helpTickets', JSON.stringify(existingTickets));
+
+      setGeneratedTicket(ticket);
+      setMessage('');
+      setCurrentView('success');
+      
+      console.log('Saved offline:', ticket);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setGeneratedTicket(ticket);
-    setMessage('');
-    setCurrentView('success');
   };
 
-  const handleCheckTicket = () => {
+  const handleCheckTicket = async () => {
     if (!searchCode.trim()) {
       alert('অনুগ্রহ করে আপনার টিকিট কোড দিন');
       return;
     }
 
-    const tickets = JSON.parse(localStorage.getItem('helpTickets') || '[]');
-    const found = tickets.find(t => t.code === searchCode.trim());
-
-    if (found) {
-      // Simulate getting response (in real app, this would fetch from server)
-      // For demo, add a response after 24 hours
-      const ticketDate = new Date(found.date);
-      const now = new Date();
-      const hoursPassed = (now - ticketDate) / (1000 * 60 * 60);
+    try {
+      // Try to fetch from API by ticket code
+      const response = await apiService.getHelpRequestByCode(searchCode.trim());
       
-      if (hoursPassed >= 0.5 && !found.response) { // 0.5 hours for demo (change to 24 for production)
-        found.response = 'আপনার সমস্যার জন্য নিকটস্থ স্বাস্থ্য কেন্দ্রে যোগাযোগ করুন। জরুরি অবস্থায় ১৬২৬৩ নম্বরে কল করুন।';
-        found.status = 'answered';
+      if (response.success) {
+        const apiTicket = {
+          code: response.data.ticketCode,
+          id: response.data._id,
+          message: response.data.description,
+          date: response.data.createdAt,
+          status: response.data.status,
+          response: response.data.response
+        };
         
         // Update localStorage
         const allTickets = JSON.parse(localStorage.getItem('helpTickets') || '[]');
-        const index = allTickets.findIndex(t => t.code === found.code);
+        const index = allTickets.findIndex(t => t.code === searchCode.trim());
         if (index >= 0) {
-          allTickets[index] = found;
+          allTickets[index] = apiTicket;
           localStorage.setItem('helpTickets', JSON.stringify(allTickets));
         }
+        
+        setFoundTicket(apiTicket);
+        return;
       }
+    } catch (apiError) {
+      console.log('API search failed, trying localStorage:', apiError);
+    }
 
-      setFoundTicket(found);
-    } else {
+    // Fallback to localStorage
+    try {
+      const tickets = JSON.parse(localStorage.getItem('helpTickets') || '[]');
+      const localTicket = tickets.find(t => t.code === searchCode.trim());
+
+      if (localTicket) {
+        // Simulate response for demo (after some time)
+        const ticketDate = new Date(localTicket.date);
+        const now = new Date();
+        const hoursPassed = (now - ticketDate) / (1000 * 60 * 60);
+        
+        if (hoursPassed >= 0.5 && !localTicket.response) {
+          localTicket.response = 'আপনার সমস্যার জন্য নিকটস্থ স্বাস্থ্য কেন্দ্রে যোগাযোগ করুন। জরুরি অবস্থায় ১৬২৬৩ নম্বরে কল করুন।';
+          localTicket.status = 'answered';
+          
+          const allTickets = JSON.parse(localStorage.getItem('helpTickets') || '[]');
+          const index = allTickets.findIndex(t => t.code === searchCode.trim());
+          if (index >= 0) {
+            allTickets[index] = localTicket;
+            localStorage.setItem('helpTickets', JSON.stringify(allTickets));
+          }
+        }
+
+        setFoundTicket(localTicket);
+      } else {
+        setFoundTicket({ notFound: true });
+      }
+    } catch (error) {
+      console.error('Error checking ticket:', error);
       setFoundTicket({ notFound: true });
     }
   };
@@ -134,8 +205,8 @@ const HelpRequest = () => {
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="এখানে আপনার স্বাস্থ্য সমস্যা বা প্রশ্ন লিখুন..."
-                rows={8}
+                placeholder="এখানে আপনার স্বাস্থ্য সমস্যা বা প্রশ্ন লিখুন...&#10;&#10;উদাহরণ:&#10;- আমার পেটে ব্যথা হচ্ছে কি করবো?&#10;- জ্বর হলে কোন ওষুধ খাবো?&#10;- গর্ভবতী মায়ের কি যত্ন নিতে হবে?"
+                rows={10}
               />
               
               <div className="privacy-info">
@@ -146,8 +217,9 @@ const HelpRequest = () => {
               <button 
                 className="submit-button"
                 onClick={handleSubmitRequest}
+                disabled={isSubmitting}
               >
-                পাঠান →
+                {isSubmitting ? 'পাঠানো হচ্ছে...' : 'পাঠান →'}
               </button>
             </div>
           </div>
