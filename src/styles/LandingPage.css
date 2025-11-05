@@ -6,7 +6,7 @@
 .hero {
   background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 25%, #ec4899 50%, #f43f5e 75%, #f97316 100%);
   background-size: 200% 200%;
-  animation: gradientAnimation 8s ease infinite;
+  animation: gradientAnimation 2s ease infinite;
   color: white;
   padding: 7rem 1.5rem;
   text-align: center;
